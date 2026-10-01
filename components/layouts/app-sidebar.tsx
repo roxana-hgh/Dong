@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/sidebar";
 import { isNavActive, mainNav, personalNav, type NavItem } from "@/lib/navigation";
 import type { SessionUser } from "@/lib/session";
+import { useSignOut } from "@/hooks/use-sign-out";
 
 function NavList({ items, pathname }: { items: NavItem[]; pathname: string }) {
   return (
@@ -40,6 +41,7 @@ function NavList({ items, pathname }: { items: NavItem[]; pathname: string }) {
 export function AppSidebar({ user }: { user: SessionUser | null }) {
   const pathname = usePathname();
   const isAuthed = user !== null;
+  const signOut = useSignOut();
   const personalItems = personalNav.filter((i) => !i.requiresAuth || isAuthed);
 
   return (
@@ -64,11 +66,7 @@ export function AppSidebar({ user }: { user: SessionUser | null }) {
               <NavList items={personalItems} pathname={pathname} />
               <SidebarMenu>
                 <SidebarMenuItem>
-                  <SidebarMenuButton
-                    onClick={() => {
-                      // TODO: call Better Auth signOut
-                    }}
-                  >
+                  <SidebarMenuButton onClick={signOut}>
                     <LogOut />
                     <span>Log out</span>
                   </SidebarMenuButton>

@@ -5,6 +5,7 @@ import { MobileNav } from "@/components/layouts/mobile-nav";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { getSessionUser } from "@/lib/session";
 
+
 export default async function MainLayout({ children }: { children: React.ReactNode }) {
   const user = await getSessionUser();
 

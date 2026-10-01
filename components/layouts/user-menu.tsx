@@ -14,16 +14,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { SessionUser } from "@/lib/session";
+import { useSignOut } from "@/hooks/use-sign-out";
 
 export function UserMenu({ user }: { user: SessionUser | null }) {
   const router = useRouter();
 
-  async function handleLogout() {
-    // TODO: await authClient.signOut() once Better Auth is set up.
-    router.push("/");
-    // Re-runs the server layout so getSessionUser() is evaluated again.
-    router.refresh();
-  }
+  const signOut = useSignOut();
+
+
 
   return (
     <DropdownMenu>
@@ -55,12 +53,12 @@ export function UserMenu({ user }: { user: SessionUser | null }) {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              className="text-destructive focus:text-destructive"
-              onClick={handleLogout}
-            >
-              <LogOut /> Log out
-            </DropdownMenuItem>
+              <DropdownMenuItem
+    className="text-destructive focus:text-destructive"
+    onClick={signOut}
+  >
+    <LogOut /> Log out
+  </DropdownMenuItem>
           </>
         ) : (
           <>

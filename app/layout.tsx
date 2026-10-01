@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Nunito_Sans, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import { ThemeProvider } from "@/components/layouts/theme-provider";
+import { ThemeProvider } from "@/components/providers/theme-provider";
 
 const fontSans = Nunito_Sans({
   subsets: ["latin"],

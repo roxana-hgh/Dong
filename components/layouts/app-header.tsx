@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowLeft, Bell, LogIn, Search, Sun } from "lucide-react";
+import { ArrowLeft, Bell, Search, Sun } from "lucide-react";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SidebarTrigger } from "@/components/ui/sidebar";
@@ -32,14 +32,7 @@ function getParentPath(pathname: string): string {
     return parent === "" ? "/" : parent;
 }
 
-function UserAvatar({ user }: { user: SessionUser }) {
-    return (
-        <Avatar className="size-9">
-            {user.image && <AvatarImage src={user.image} alt={user.name} />}
-            <AvatarFallback>{user.name.slice(0, 1).toUpperCase()}</AvatarFallback>
-        </Avatar>
-    );
-}
+
 
 export function AppHeader({ user }: { user: SessionUser | null }) {
     const pathname = usePathname();
