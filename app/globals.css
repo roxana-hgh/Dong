@@ -53,6 +53,8 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+
+
 :root {
   /* Surfaces: airy, slightly cool white */
   --background: oklch(0.98 0.005 250);
@@ -152,6 +154,19 @@
   --sidebar-ring: oklch(0.65 0.1 255);
 }
 
+
+:root {
+
+  --border: #e6ebf2;
+  --muted: #eef2f7;
+  --muted-foreground: #64748b;
+}
+.dark {
+ 
+  --border: rgb(255 255 255 / 0.08);
+  --muted: #17223a;
+  --muted-foreground: #94a3b8;
+}
 
 @layer base {
   * {

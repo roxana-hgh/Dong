@@ -1,24 +1,40 @@
-import { Badge } from "@/components/ui/badge";
+import { Users } from "lucide-react";
+import { Surface } from "@/components/shared/surface";
 import { GroupCover } from "./group-cover";
+import { StatusPill } from "./status-pill";
 
-export function GroupHeader({ id, name, memberCount }: { id: string; name: string; memberCount: number }) {
+export function GroupHeader({
+  id,
+  name,
+  memberCount,
+  children,
+}: {
+  id: string;
+  name: string;
+  memberCount: number;
+  children?: React.ReactNode; // the tabs
+}) {
   return (
-    <GroupCover seed={id} className="rounded-2xl px-5 py-6 sm:px-6 sm:py-8">
-      <div className="relative flex items-center gap-4 text-primary-foreground">
-        <div
-          aria-hidden
-          className="grid size-14 shrink-0 place-items-center rounded-2xl bg-primary-foreground/15 text-xl font-semibold backdrop-blur"
-        >
-          {Array.from(name)[0]?.toUpperCase()}
+    <Surface className="overflow-hidden">
+      <GroupCover seed={id} className="h-28 sm:h-36">
+        <div className="absolute inset-x-0 bottom-0 flex items-end gap-3 bg-gradient-to-t from-black/30 to-transparent px-4 pb-3.5 pt-10 text-white sm:px-5">
+          <div
+            aria-hidden
+            className="grid size-12 shrink-0 place-items-center rounded-xl bg-white/20 text-lg font-semibold ring-1 ring-white/30 backdrop-blur"
+          >
+            {Array.from(name)[0]?.toUpperCase()}
+          </div>
+          <div className="min-w-0 pb-0.5">
+            <h1 className="truncate text-xl font-semibold leading-tight sm:text-2xl">{name}</h1>
+            <p className="flex items-center gap-1.5 text-xs text-white/85">
+              <Users className="size-3.5" aria-hidden />
+              {memberCount} members · USD
+            </p>
+          </div>
+          <StatusPill className="ml-auto mb-1" />
         </div>
-        <div className="min-w-0">
-          <h1 className="truncate text-2xl font-semibold">{name}</h1>
-          <p className="text-sm opacity-90">{memberCount} members · USD</p>
-        </div>
-        <Badge className="ml-auto bg-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/20">
-          Active
-        </Badge>
-      </div>
-    </GroupCover>
+      </GroupCover>
+      {children}
+    </Surface>
   );
 }

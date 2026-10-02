@@ -21,9 +21,10 @@ export default async function GroupLayout({
   if (!group) notFound();
 
   return (
-    <div className="space-y-6">
-      <GroupHeader id={group.id} name={group.name} memberCount={group._count.members} />
-      <GroupTabs groupId={groupId} />
+    <div className="space-y-5">
+      <GroupHeader id={group.id} name={group.name} memberCount={group._count.members}>
+        <GroupTabs groupId={groupId} />
+      </GroupHeader>
       {children}
     </div>
   );

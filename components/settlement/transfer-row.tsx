@@ -1,6 +1,6 @@
-import { ArrowRight } from "lucide-react";
 import { formatMoney } from "@/lib/money";
 import { UserAvatar } from "@/components/shared/user-avatar";
+import { cn } from "@/lib/utils";
 
 type Person = { id: string; displayName: string };
 
@@ -17,22 +17,31 @@ export function TransferRow({
   meId: string;
   action?: React.ReactNode;
 }) {
-  const fromLabel = from.id === meId ? "You" : from.displayName;
-  const toLabel = to.id === meId ? "you" : to.displayName;
-  const verb = from.id === meId ? "pay" : "pays";
+  const iPay = from.id === meId;
+  const iGet = to.id === meId;
+  const title = `${iPay ? "You" : from.displayName} → ${iGet ? "You" : to.displayName}`;
+  const subtitle = iPay ? "You pay" : iGet ? "Pays you" : "Pending";
 
   return (
-    <div className="flex items-center gap-3 py-3">
-      <div className="flex shrink-0 items-center gap-1.5">
-        <UserAvatar name={from.displayName} />
-        <ArrowRight className="size-4 text-muted-foreground" aria-hidden />
-        <UserAvatar name={to.displayName} />
+    <li className="flex items-center gap-3 py-2.5">
+      <div className="flex shrink-0 -space-x-2">
+        <UserAvatar name={from.displayName} size="sm" className="ring-2 ring-card" />
+        <UserAvatar name={to.displayName} size="sm" className="ring-2 ring-card" />
       </div>
-      <p className="min-w-0 flex-1 truncate text-sm font-medium">
-        {fromLabel} {verb} {toLabel}
-      </p>
-      <span className="font-semibold tabular-nums">{formatMoney(amountMinor)}</span>
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm font-medium">{title}</p>
+        <p className="text-xs text-muted-foreground">{subtitle}</p>
+      </div>
+      <span
+        className={cn(
+          "text-sm font-semibold tabular-nums",
+          iGet && "text-emerald-700 dark:text-emerald-300",
+          iPay && "text-amber-800 dark:text-amber-300",
+        )}
+      >
+        {formatMoney(amountMinor)}
+      </span>
       {action}
-    </div>
+    </li>
   );
 }

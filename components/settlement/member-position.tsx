@@ -23,7 +23,7 @@ export function MemberPosition({
   gets: Line[]; // who must pay this member
 }) {
   return (
-    <li className="space-y-2 py-4">
+    <li className="space-y-2 py-3">
       <div className="flex items-center gap-3">
         <UserAvatar name={name} />
         <div className="min-w-0 flex-1">

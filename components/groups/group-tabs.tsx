@@ -16,7 +16,7 @@ export function GroupTabs({ groupId }: { groupId: string }) {
   const base = `/groups/${groupId}`;
 
   return (
-    <nav aria-label="Group sections" className="flex gap-1 border-b">
+    <nav aria-label="Group sections" className="flex gap-1 overflow-x-auto px-3 [scrollbar-width:none] sm:px-4">
       {TABS.map((tab) => {
         const active = tab.href === "" ? pathname === base : pathname.startsWith(base + tab.href);
         return (
@@ -25,8 +25,10 @@ export function GroupTabs({ groupId }: { groupId: string }) {
             href={base + tab.href}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "-mb-px border-b-2 px-4 py-2 text-sm font-medium transition-colors",
-              active ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground",
+              "relative whitespace-nowrap px-3 py-3 text-[13px] font-medium transition-colors",
+              active
+                ? "text-primary after:absolute after:inset-x-3 after:bottom-0 after:h-0.5 after:rounded-full after:bg-primary"
+                : "text-muted-foreground hover:text-foreground",
             )}
           >
             {tab.label}

@@ -1,11 +1,16 @@
 import type { LucideIcon } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Surface } from "@/components/shared/surface";
 import { cn } from "@/lib/utils";
 
-const TONES = {
+const VALUE_TONES = {
   default: "",
-  owe: "text-amber-700 dark:text-amber-300",
+  owe: "text-amber-800 dark:text-amber-300",
   owed: "text-emerald-700 dark:text-emerald-300",
+};
+const ICON_TONES = {
+  default: "bg-primary/10 text-primary",
+  owe: "bg-amber-500/10 text-amber-700 dark:text-amber-300",
+  owed: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
 };
 
 export function StatCard({
@@ -18,18 +23,22 @@ export function StatCard({
   label: string;
   value: string;
   icon?: LucideIcon;
-  tone?: keyof typeof TONES;
+  tone?: keyof typeof VALUE_TONES;
   className?: string;
 }) {
   return (
-    <Card className={cn("gap-1 rounded-2xl py-4", className)}>
-      <CardContent className="space-y-1 px-5">
-        <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
-          {Icon && <Icon className="size-4" aria-hidden />}
-          {label}
+    <Surface className={cn("flex items-center justify-between gap-3 px-4 py-3", className)}>
+      <div className="min-w-0">
+        <p className="text-xs text-muted-foreground">{label}</p>
+        <p className={cn("mt-0.5 truncate text-xl font-semibold tabular-nums tracking-tight", VALUE_TONES[tone])}>
+          {value}
         </p>
-        <p className={cn("text-2xl font-semibold tabular-nums", TONES[tone])}>{value}</p>
-      </CardContent>
-    </Card>
+      </div>
+      {Icon && (
+        <span className={cn("grid size-8 shrink-0 place-items-center rounded-xl", ICON_TONES[tone])}>
+          <Icon className="size-4" aria-hidden />
+        </span>
+      )}
+    </Surface>
   );
 }

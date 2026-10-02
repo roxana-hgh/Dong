@@ -3,8 +3,8 @@ import { Plus } from "lucide-react";
 import { db } from "@/lib/db";
 import { requireGroupMember } from "@/lib/session";
 import { Button } from "@/components/ui/button";
+import { SectionCard } from "@/components/shared/section-card";
 import { ExpenseList } from "@/components/expenses/expense-list";
-
 
 export default async function ExpensesPage({ params }: { params: Promise<{ groupId: string }> }) {
   const { groupId } = await params;
@@ -16,17 +16,22 @@ export default async function ExpensesPage({ params }: { params: Promise<{ group
     select: {
       id: true, title: true, amountMinor: true, category: true, date: true, createdById: true,
       paidBy: { select: { displayName: true } },
+      _count: { select: { shares: true } },
     },
   });
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-end">
-        <Button asChild>
-          <Link href={`/groups/${groupId}/expenses/new`}><Plus className="size-4" /> Add expense</Link>
+    <SectionCard
+      title={`Expenses (${expenses.length})`}
+      action={
+        <Button asChild size="sm">
+          <Link href={`/groups/${groupId}/expenses/new`}>
+            <Plus className="size-4" aria-hidden /> Add expense
+          </Link>
         </Button>
-      </div>
+      }
+    >
       <ExpenseList expenses={expenses} groupId={groupId} currentMember={member} />
-    </div>
+    </SectionCard>
   );
 }
