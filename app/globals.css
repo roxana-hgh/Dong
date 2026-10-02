@@ -128,7 +128,7 @@
   --accent-foreground: oklch(0.965 0.003 100);
 
   /* Status */
-  --destructive: oklch(0.704 0.191 22.216);
+  --destructive: oklch(68.321% 0.20073 23.139);
   --success: oklch(0.72 0.15 155);
   --success-foreground: oklch(0.2 0.04 155);
   --warning: oklch(0.8 0.14 75);
@@ -155,7 +155,7 @@
 }
 
 
-:root {
+/* :root {
 
   --border: #e6ebf2;
   --muted: #eef2f7;
@@ -166,7 +166,7 @@
   --border: rgb(255 255 255 / 0.08);
   --muted: #17223a;
   --muted-foreground: #94a3b8;
-}
+} */
 
 @layer base {
   * {

@@ -1,14 +1,16 @@
 "use client";
 
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { Copy, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { regenerateInviteToken } from "@/actions/groups";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Surface } from "@/components/shared/surface";
+import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 
 export function InviteLinkCard({ groupId, url, canRegenerate }: { groupId: string; url: string; canRegenerate: boolean }) {
+  const [open, setOpen] = useState(false);
   const [pending, startTransition] = useTransition();
 
   async function copy() {
@@ -20,12 +22,12 @@ export function InviteLinkCard({ groupId, url, canRegenerate }: { groupId: strin
     }
   }
 
-  function regenerate() {
-    if (!window.confirm("The old link will stop working. Continue?")) return;
+  function onConfirm() {
     startTransition(async () => {
       const res = await regenerateInviteToken(groupId);
       if (!res.ok) toast.error(res.error);
       else toast.success("New link generated");
+      setOpen(false);
     });
   }
 
@@ -47,11 +49,30 @@ export function InviteLinkCard({ groupId, url, canRegenerate }: { groupId: strin
           <Copy className="size-4" aria-hidden /> Copy
         </Button>
         {canRegenerate && (
-          <Button type="button" variant="ghost" size="icon" className="size-9" aria-label="Regenerate link" disabled={pending} onClick={regenerate}>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="size-9"
+            aria-label="Regenerate link"
+            onClick={() => setOpen(true)}
+          >
             <RefreshCw className="size-4" />
           </Button>
         )}
       </div>
+
+      {canRegenerate && (
+        <ConfirmDialog
+          open={open}
+          onOpenChange={setOpen}
+          title="Generate a new invite link?"
+          description="The old link will stop working immediately. People who already joined are not affected."
+          confirmLabel="Generate new link"
+          pending={pending}
+          onConfirm={onConfirm}
+        />
+      )}
     </Surface>
   );
 }

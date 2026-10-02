@@ -3,6 +3,7 @@ import { Plus } from "lucide-react";
 import { getCurrentUser } from "@/lib/session";
 import { getGroupsSummary } from "@/lib/group-financials";
 import { GroupCard } from "@/components/groups/group-card";
+import { Badge } from "@/components/ui/badge";
 
 export default async function HomePage() {
   const user = await getCurrentUser();
@@ -18,7 +19,7 @@ export default async function HomePage() {
 
       <section aria-labelledby="groups-heading" className="space-y-3">
         <h2 id="groups-heading" className="font-semibold">
-          Your groups <span className="text-muted-foreground">({groups.length})</span>
+          Your groups   <Badge className="">{groups.length}</Badge> 
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {groups.map((g) => <GroupCard key={g.id} group={g} />)}

@@ -46,14 +46,14 @@ export function CreateGroupForm({ defaultName }: { defaultName: string }) {
 
   return (
     <form onSubmit={onSubmit} noValidate>
-      <Card className="rounded-2xl">
+      <Card className="rounded-2xl ">
         <div className="flex flex-col items-center gap-2">
           <GroupCover seed="new-group" className="grid size-24 place-items-center rounded-full">
             <Camera className="relative size-7 text-primary-foreground" aria-hidden />
           </GroupCover>
           <p className="text-xs text-muted-foreground">Cover photo (coming soon)</p>
         </div>
-        <CardContent className="space-y-5 pt-6">
+        <CardContent className="space-y-5 pt-6 pb-4">
           <div className="space-y-2">
             <Label htmlFor="name">Group name</Label>
             <Input id="name" placeholder="Weekend trip" {...register("name")} />

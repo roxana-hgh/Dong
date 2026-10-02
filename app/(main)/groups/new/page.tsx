@@ -7,8 +7,8 @@ export default async function NewGroupPage() {
   const defaultName = user && !user.isAnonymous ? user.name : "";
 
   return (
-    <div className="mx-auto max-w-xl space-y-6">
-      <h1 className="text-2xl font-semibold">Create a group</h1>
+    <div className="mx-auto max-w-xl space-y-4">
+      <h1 className="text-xl font-semibold">Create a group</h1>
       <CreateGroupForm defaultName={defaultName} />
     </div>
   );
