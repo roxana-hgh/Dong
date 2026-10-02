@@ -51,7 +51,7 @@ export function AppHeader({ user }: { user: SessionUser | null }) {
 
             {isDashboard ? (
                 <div className="flex items-center gap-3">
-                    <Sun className="size-6 text-amber-500" aria-hidden />
+                    <Sun className="size-5 lg:size-6 text-amber-500" aria-hidden />
                     <div className="leading-tight">
                         <h1 className="text-sm font-semibold">
                             {greeting}, {user?.name ?? "Guest"}

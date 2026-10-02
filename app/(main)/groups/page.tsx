@@ -4,18 +4,14 @@ import { getCurrentUser } from "@/lib/session";
 import { getGroupsSummary } from "@/lib/group-financials";
 import { GroupCard } from "@/components/groups/group-card";
 
-export default async function HomePage() {
+export default async function GroupsPage() {
   const user = await getCurrentUser();
   const groups = user ? await getGroupsSummary(user.id) : [];
-  const firstName = user && !user.isAnonymous ? user.name.split(" ")[0] : null;
+
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold">{firstName ? `Welcome, ${firstName}` : "Welcome"}</h1>
-        <p className="text-sm text-muted-foreground">Here&apos;s your groups and who owes what.</p>
-      </div>
-
+    
       <section aria-labelledby="groups-heading" className="space-y-3">
         <h2 id="groups-heading" className="font-semibold">
           Your groups <span className="text-muted-foreground">({groups.length})</span>

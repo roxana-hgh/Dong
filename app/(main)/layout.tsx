@@ -3,11 +3,11 @@ import { AppHeader } from "@/components/layouts/app-header";
 import { AppSidebar } from "@/components/layouts/app-sidebar";
 import { MobileNav } from "@/components/layouts/mobile-nav";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { getSessionUser } from "@/lib/session";
+import { getCurrentUser } from "@/lib/session";
 
 
 export default async function MainLayout({ children }: { children: React.ReactNode }) {
-  const user = await getSessionUser();
+  const user = await getCurrentUser();
 
   return (
     <SidebarProvider>

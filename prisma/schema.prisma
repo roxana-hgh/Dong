@@ -22,6 +22,10 @@ model User {
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
+  isAnonymous   Boolean?
+
+  groupsCreated Group[]
+  memberships   GroupMember[]
 
   @@unique([email])
   @@map("user")
@@ -73,4 +77,135 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+enum GroupRole {
+  OWNER
+  MEMBER
+}
+
+enum GroupStatus {
+  ACTIVE
+  ARCHIVED
+}
+
+enum SplitType {
+  EQUAL
+  PERCENTAGE
+  EXACT
+}
+
+enum ExpenseCategory {
+  FOOD
+  TRANSPORT
+  ACCOMMODATION
+  ENTERTAINMENT
+  OTHER
+}
+
+model Group {
+  id          String      @id @default(cuid())
+  name        String
+  currency    String      @default("USD") // fixed to USD for now, column kept for the future
+  inviteToken String      @unique
+  status      GroupStatus @default(ACTIVE)
+  createdById String
+  createdAt   DateTime    @default(now())
+
+  createdBy  User          @relation(fields: [createdById], references: [id])
+  members    GroupMember[]
+  expenses   Expense[]
+  activities Activity[]
+
+  settlements Settlement[]
+
+  @@index([createdById])
+}
+
+model GroupMember {
+  id          String    @id @default(cuid())
+  groupId     String
+  userId      String? // null = placeholder (added by name, no account yet)
+  displayName String
+  role        GroupRole @default(MEMBER)
+  joinedAt    DateTime  @default(now())
+
+  group        Group          @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user         User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+  paidExpenses Expense[]      @relation("ExpensePayer")
+  shares       ExpenseShare[]
+
+  settlementsSent     Settlement[] @relation("SettlementFrom")
+  settlementsReceived Settlement[] @relation("SettlementTo")
+  settlementsMarked   Settlement[] @relation("SettlementMarkedBy")
+
+  @@unique([groupId, userId]) // a user can join a group only once
+  @@index([groupId])
+  @@index([userId])
+}
+
+model Expense {
+  id          String          @id @default(cuid())
+  groupId     String
+  title       String
+  amountMinor Int // cents
+  category    ExpenseCategory @default(OTHER)
+  date        DateTime        @default(now())
+  splitType   SplitType
+  note        String?
+  paidById    String // GroupMember.id
+  createdById String // GroupMember.id
+  createdAt   DateTime        @default(now())
+
+  group  Group          @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  paidBy GroupMember    @relation("ExpensePayer", fields: [paidById], references: [id], onDelete: Restrict)
+  shares ExpenseShare[]
+
+  @@index([groupId, createdAt])
+  @@index([paidById])
+}
+
+model ExpenseShare {
+  id         String @id @default(cuid())
+  expenseId  String
+  memberId   String
+  shareMinor Int // resolved amount, source of truth
+
+  expense Expense     @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+  member  GroupMember @relation(fields: [memberId], references: [id], onDelete: Restrict)
+
+  @@unique([expenseId, memberId])
+  @@index([memberId])
+}
+
+model Activity {
+  id        String   @id @default(cuid())
+  groupId   String
+  actorId   String? // GroupMember.id
+  type      String // EXPENSE_ADDED, MEMBER_JOINED, ... (can become an enum later)
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@index([groupId, createdAt])
+}
+
+model Settlement {
+  id           String   @id @default(cuid())
+  groupId      String
+  fromMemberId String // the debtor who paid
+  toMemberId   String // the creditor who received
+  amountMinor  Int
+  markedById   String // who clicked "Mark as paid"
+  paidAt       DateTime @default(now())
+
+  group    Group       @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  from     GroupMember @relation("SettlementFrom", fields: [fromMemberId], references: [id], onDelete: Restrict)
+  to       GroupMember @relation("SettlementTo", fields: [toMemberId], references: [id], onDelete: Restrict)
+  markedBy GroupMember @relation("SettlementMarkedBy", fields: [markedById], references: [id], onDelete: Restrict)
+
+  @@index([groupId, paidAt])
+  @@index([fromMemberId])
+  @@index([toMemberId])
 }
