@@ -42,3 +42,5 @@ export async function requireGroupMember(groupId: string) {
 
   return { user, member };
 }
+
+export type SessionUser = NonNullable<Awaited<ReturnType<typeof getCurrentUser>>>;
