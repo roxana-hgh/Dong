@@ -27,10 +27,10 @@ export function StatCard({
   className?: string;
 }) {
   return (
-    <Surface className={cn("flex items-center justify-between gap-3 px-4 py-3", className)}>
+    <Surface className={cn("flex min-w-0 items-center justify-between gap-3 px-4 py-3", className)}>
       <div className="min-w-0">
         <p className="text-xs text-muted-foreground">{label}</p>
-        <p className={cn("mt-0.5 truncate text-xl font-semibold tabular-nums tracking-tight", VALUE_TONES[tone])}>
+        <p className={cn("mt-0.5 truncate text-lg sm:text-xl font-semibold tabular-nums tracking-tight", VALUE_TONES[tone])}>
           {value}
         </p>
       </div>

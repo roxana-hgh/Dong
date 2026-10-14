@@ -39,8 +39,8 @@ export default async function GroupOverviewPage({ params }: { params: Promise<{ 
   const preview = fin.transfers.slice(0, 4);
 
   return (
-    <div className="grid gap-5 lg:grid-cols-3">
-      <div className="space-y-5 lg:col-span-2">
+    <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+      <div className="min-w-0 space-y-5 lg:col-span-2">
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-6">
           <StatCard label="Total spending" value={formatMoney(fin.totalMinor)} icon={Wallet} className="col-span-2" />
           <StatCard label="You paid" value={formatMoney(mine.paidMinor)} icon={Receipt} className="sm:col-span-2" />
@@ -82,7 +82,7 @@ export default async function GroupOverviewPage({ params }: { params: Promise<{ 
         members={fin.members}
         balanceById={balanceById}
         meId={member.id}
-        className="h-fit"
+        className="h-fit min-w-0"
       />
     </div>
   );

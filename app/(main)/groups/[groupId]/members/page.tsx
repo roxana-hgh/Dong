@@ -27,20 +27,39 @@ export default async function MembersPage({ params }: { params: Promise<{ groupI
       <InviteLinkCard groupId={groupId} url={inviteUrl} canRegenerate={isOwner} />
 
       <SectionCard title={`Members (${fin.members.length})`}>
+
         <ul className="divide-y divide-border/60">
-          {fin.members.map((m) => (
-            <li key={m.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 py-2.5">
-              <UserAvatar name={m.displayName} />
-              <span className="min-w-0 flex-1 truncate text-sm font-medium">{m.displayName}</span>
-              {m.id === me.id && <Badge variant="secondary">You</Badge>}
-              {m.role === "OWNER" && <Badge variant="secondary">Owner</Badge>}
-              {m.userId === null && <Badge variant="outline">Not joined yet</Badge>}
-              <BalanceChip balanceMinor={balanceById.get(m.id) ?? 0} subject="member" />
-              {isOwner && m.role !== "OWNER" && (
-                <RemoveMemberButton groupId={groupId} memberId={m.id} name={m.displayName} />
-              )}
-            </li>
-          ))}
+          {fin.members.map((m) => {
+            const canRemove = isOwner && m.role !== "OWNER";
+            return (
+              <li
+                key={m.id}
+                className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-start gap-x-3 gap-y-1.5 py-3 sm:flex sm:flex-wrap sm:items-center sm:gap-y-1 sm:py-2.5"
+              >
+                <UserAvatar name={m.displayName} />
+
+                {/* Mobile: name on the first line, badges/chip on the second line */}
+                <div className="min-w-0 sm:contents">
+                  <p className="break-words text-sm font-medium leading-tight sm:min-w-0 sm:flex-1 sm:truncate">
+                    {m.displayName}
+                  </p>
+
+                  <div className="mt-1.5 flex flex-wrap items-center gap-1.5 sm:mt-0 sm:contents">
+                    {m.id === me.id && <Badge variant="secondary">You</Badge>}
+                    {m.role === "OWNER" && <Badge variant="secondary">Owner</Badge>}
+                    {m.userId === null && <Badge variant="outline">Not joined yet</Badge>}
+                    <BalanceChip balanceMinor={balanceById.get(m.id) ?? 0} subject="member" />
+                  </div>
+                </div>
+
+                {canRemove ? (
+                  <RemoveMemberButton groupId={groupId} memberId={m.id} name={m.displayName} />
+                ) : (
+                  <span className="sm:hidden" aria-hidden />
+                )}
+              </li>
+            );
+          })}
         </ul>
         <div className="mt-2 border-t border-border/60 pb-1 pt-4">
           <AddMemberForm groupId={groupId} />
