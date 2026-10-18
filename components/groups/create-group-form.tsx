@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Camera, Plus, X } from "lucide-react";
+import { Camera, Plus, Users, X } from "lucide-react";
 import { toast } from "sonner";
 import { createGroup } from "@/actions/groups";
 import { ensureSession } from "@/lib/auth-client";
@@ -13,22 +13,35 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { GroupCover } from "@/components/groups/group-cover";
+import { FriendItem, FriendListItem } from "@/components/friends/types";
+import { FriendPicker } from "@/components/friends/friend-picker";
 
 const FieldError = ({ message }: { message?: string }) =>
   message ? <p className="text-sm text-destructive">{message}</p> : null;
 
-export function CreateGroupForm({ defaultName }: { defaultName: string }) {
+export function CreateGroupForm({
+  defaultName,
+  friends,
+  friendLists = [],
+}: {
+  defaultName: string;
+  friends?: FriendItem[];
+  friendLists?: FriendListItem[];
+}) {
   const router = useRouter();
   const {
     register,
     control,
     handleSubmit,
+    watch,
+    getValues,
     formState: { errors, isSubmitting },
   } = useForm<CreateGroupInput>({
     resolver: zodResolver(createGroupSchema),
     defaultValues: { name: "", yourName: defaultName, members: [{ name: "" }] },
   });
-  const { fields, append, remove } = useFieldArray({ control, name: "members" });
+  const { fields, append, remove, replace } = useFieldArray({ control, name: "members" });
+  const takenNames = [watch("yourName"), ...watch("members").map((m) => m.name)];
 
   const onSubmit = handleSubmit(async (values) => {
     // Guest-friendly: create an anonymous session first if the visitor isn't signed in.
@@ -73,18 +86,41 @@ export function CreateGroupForm({ defaultName }: { defaultName: string }) {
                 <Input
                   aria-label={`Member ${i + 1} name`}
                   placeholder="Name"
-                  {...register(`members.${i}.name`)}
+                  {...register(`members.${i}.name`)} 
+                  
                 />
                 <Button type="button" variant="ghost" size="icon" aria-label="Remove" onClick={() => remove(i)}>
                   <X className="size-4" />
                 </Button>
+                
               </div>
             ))}
             {errors.members?.map?.((e, i) => <FieldError key={i} message={e?.name?.message} />)}
             <FieldError message={errors.members?.root?.message ?? errors.members?.message} />
-            <Button type="button" variant="outline" size="sm" onClick={() => append({ name: "" })}>
-              <Plus className="size-4" /> Add person
-            </Button>
+          
+            <div className="flex flex-wrap gap-2">
+                  <Button type="button" variant="outline" size="sm" onClick={() => append({ name: "" })}>
+                    <Plus className="size-4" /> Add person
+                  </Button>
+                  {friends && (
+                    <FriendPicker
+                      friends={friends}
+                      lists={friendLists}
+                      takenNames={takenNames}
+                      confirmLabel="Add to group"
+                      trigger={
+                        <Button type="button" variant="secondary" size="sm">
+                          <Users className="size-4" aria-hidden /> From friends
+                        </Button>
+                      }
+                      onConfirm={(picked) => {
+                        // Drop empty rows so we don't leave blank inputs behind, then append the picked names.
+                        const filled = getValues("members").filter((m) => m.name.trim() !== "");
+                        replace([...filled, ...picked.map((f) => ({ name: f.name }))]);
+                      }}
+                    />
+                  )}
+                </div>
           </div>
 
           <Button type="submit" className="w-full" disabled={isSubmitting}>

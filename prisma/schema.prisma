@@ -26,6 +26,8 @@ model User {
 
   groupsCreated Group[]
   memberships   GroupMember[]
+  friends     Friend[]
+  friendLists FriendList[]
 
   @@unique([email])
   @@map("user")
@@ -208,4 +210,32 @@ model Settlement {
   @@index([groupId, paidAt])
   @@index([fromMemberId])
   @@index([toMemberId])
+}
+
+model Friend {
+  id        String   @id @default(cuid())
+  ownerId   String
+  name      String
+  nameKey   String // lowercase name: gives us case-insensitive uniqueness at the DB level
+  createdAt DateTime @default(now())
+
+  owner User         @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  lists FriendList[] // implicit many-to-many
+
+  @@unique([ownerId, nameKey])
+  @@index([ownerId])
+}
+
+model FriendList {
+  id        String   @id @default(cuid())
+  ownerId   String
+  name      String
+  nameKey   String
+  createdAt DateTime @default(now())
+
+  owner   User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  friends Friend[]
+
+  @@unique([ownerId, nameKey])
+  @@index([ownerId])
 }

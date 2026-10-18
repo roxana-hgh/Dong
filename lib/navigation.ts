@@ -1,5 +1,6 @@
 import {
   Activity,
+  BookUser,
   Home,
   Plus,
   Settings,
@@ -22,6 +23,7 @@ export const mainNav: NavItem[] = [
   { title: "Home", href: "/", icon: Home, exact: true },
   { title: "My Groups", href: "/groups", icon: Users, excludes: ["/groups/new"] },
   { title: "Create Group", href: "/groups/new", icon: Plus, exact: true },
+  { title: "Friends", href: "/friends", icon: BookUser, exact: true },
 ];
 
 export const personalNav: NavItem[] = [
